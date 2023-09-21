@@ -20,16 +20,8 @@ function getClientIp(req) {
     const forwardedFor = req.headers['x-forwarded-for'];
     const directIp = req.connection.remoteAddress.toString();
 
-    // Define the private IP address ranges
-    const privateRanges = [
-        /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/,            // 10.0.0.0 - 10.255.255.255
-        /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/, // 172.16.0.0 - 172.31.255.255
-        /^192\.168\.\d{1,3}\.\d{1,3}$/              // 192.168.0.0 - 192.168.255.255
-    ];
-
-    // If the connecting client is within a trusted range, trust the X-Forwarded-For header
-    if (privateRanges.some(range => directIp.match(range)) && forwardedFor) {
-	console.log(`Request originated from trusted IP range and contains X-Forwarded-For header`);
+    if (forwardedFor) {
+	console.log(`Request contains X-Forwarded-For header`);
         const ips = forwardedFor.split(',').map(ip => ip.trim()); // Handle cases with multiple forwarded IPs
         return ips[0]; // The first IP is the original client IP
     }
