@@ -29,6 +29,8 @@ function getClientIp(req) {
 
     // If the connecting client is within a trusted range, trust the X-Forwarded-For header
     if (privateRanges.some(range => directIp.match(range)) && forwardedFor) {
+	console.log(`Request originates from trusted IP range and contains X-Forwarded-For header`);
+	console.log(forwardedFor);
         const ips = forwardedFor.split(',').map(ip => ip.trim()); // Handle cases with multiple forwarded IPs
         return ips[0]; // The first IP is the original client IP
     }
