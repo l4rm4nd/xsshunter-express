@@ -16,6 +16,28 @@ const api = require('./api.js');
 const validate = require('express-jsonschema').validate;
 const constants = require('./constants.js');
 
+function getClientIp(req) {
+    const forwardedFor = req.headers['x-forwarded-for'];
+    const directIp = req.connection.remoteAddress.toString();
+
+    // Define the private IP address ranges
+    const privateRanges = [
+        /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/,            // 10.0.0.0 - 10.255.255.255
+        /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/, // 172.16.0.0 - 172.31.255.255
+        /^192\.168\.\d{1,3}\.\d{1,3}$/              // 192.168.0.0 - 192.168.255.255
+    ];
+
+    // If the connecting client is within a trusted range, trust the X-Forwarded-For header
+    if (privateRanges.some(range => directIp.match(range)) && forwardedFor) {
+        const ips = forwardedFor.split(',').map(ip => ip.trim()); // Handle cases with multiple forwarded IPs
+        return ips[0]; // The first IP is the original client IP
+    }
+
+    // If the connecting client is not within a trusted range, or if there's no X-Forwarded-For header, return the direct IP
+    return directIp;
+}
+
+
 function set_secure_headers(req, res) {
 	res.set("X-XSS-Protection", "mode=block");
 	res.set("X-Content-Type-Options", "nosniff");
@@ -53,6 +75,7 @@ async function get_app_server() {
 	// I have a question for Express:
 	// https://youtu.be/ZtjFsQBuJWw?t=4
 	app.set('case sensitive routing', true);
+	
 
     // Making 100% sure this works like it should
     // https://youtu.be/aCbfMkh940Q?t=6
@@ -205,7 +228,7 @@ async function get_app_server() {
 		var payload_fire_data = {
 			id: payload_fire_id,
 			url: req.body.uri,
-			ip_address: req.connection.remoteAddress.toString(),
+			ip_address: getClientIp(req),
 			referer: req.body.referrer,
 			user_agent: req.body['user-agent'],
 			cookies: req.body.cookies,
