@@ -16,13 +16,14 @@ To set up XSS Hunter Express, modify the [`docker-compose.yaml`](https://github.
 
 The following are some YAML fields (in [`docker-compose.yaml`](https://github.com/mandatoryprogrammer/xsshunter-express/blob/main/docker-compose.yml)) you'll need to modify before starting the service:
 
+* `SSL_ENABLED`: Set this field to `true` if you want to automatically obtain TLS/SSL certificates. Otherwise, choose the default `false` and use the container's TCP/80 port only.
 * `HOSTNAME`: Set this field to your hostname you want to use for your payloads and to access the web admin panel. Often this is as short as possible (e.g. `xss.ht`) so the payload can be fit into various fields for testing. This hostname should be mapped to the IP address of your instance (via a DNS `A` record).
 * `SSL_CONTACT_EMAIL`: In order to automatically set up and renew TLS/SSL certificates via [Let's Encrypt](https://letsencrypt.org/) you'll need to provide an email address.
 
 The following are needed if you want email notifications:
 
 * `SMTP_EMAIL_NOTIFICATIONS_ENABLED`: Leave enabled to receive email notifications (you must set this up via the below configurations as well).
-*  `SMTP_HOST`: The host of your SMTP server where your email account is hosted (e.g. `smtp.gmail.com`).
+* `SMTP_HOST`: The host of your SMTP server where your email account is hosted (e.g. `smtp.gmail.com`).
 * `SMTP_PORT`: The port of your SMTP server (e.g. `465`).
 * `SMTP_USE_TLS`: Utilize TLS if your SMTP server supports it.
 * `SMTP_USERNAME`: The username of the email account on your SMTP server (e.g. `exampleuser`).
