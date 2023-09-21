@@ -9,7 +9,7 @@
         </li>
       </ul>
       <div class="copyright">
-        © {{year}} by <a href="https://twitter.com/IAmMandatory" target="_blank"><code>@IAmMandatory</code></a>
+        © {{year}} by <a href="https://github.com/l4rm4nd" target="_blank"><code>LRVT</code></a>
       </div>
     </div>
   </footer>
